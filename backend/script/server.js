@@ -29,9 +29,11 @@ console.log("Server Wallet Address:", serverWallet.publicKey.toBase58());
 
 // Liste NFT pour le Tirage
 const nftList = [
-  "NFT_MINT_ADDRESS_1",
-  "NFT_MINT_ADDRESS_2",
-  "NFT_MINT_ADDRESS_3"
+  '7vsSusAcLvD6yVgTJ6oFAzBJ7JhcfDA1xFgAzei1ywnm',
+  '2qftdEWt8pWQ9T5xMvy1YXqx4ATKKRfQYACMHrGFo1ih',
+  'CjEejEjtdHGAeGatoyhLHppodUSwPrLe9SVRQxAmnMPw',
+  'DhFFwuvFHNNKeCNb4gpRwmYmajT8ed6NMeovg63xSh6',
+  'A8o7Ym8zextu4XnYpAcyh8wWhfsGspixQrtjz3mGJCY4'
 ];
 
 app.post("/draw", async (req, res) => {
