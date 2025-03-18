@@ -6,6 +6,7 @@ import axios from "axios";
 
 const walletAddress = ref(null);
 const winnerNft = ref(null);
+const isDrawing = ref(false); // Nouvel état pour suivre si un tirage est en cours
 const connection = new Connection(clusterApiUrl("devnet"));
 
 //Connection avec Wallet Phantom
@@ -28,14 +29,24 @@ const drawNft = async () => {
     alert ("Connectez votre wallet");
     return;
   }
+  if(isDrawing.value) { // Si un tirage est déjà en cours
+    return;
+  }
   try {
-    const { data } = await axios.post("http://localhost:5173/draw",{
-      playerPubKey: walletAddress.value,
+    isDrawing.value = true; // Début du tirage
+    const { data } = await axios.post("http://localhost:5000/draw",{
+      playerPublicKey: walletAddress.value,
     });
     winnerNft.value = data;
+    // Réinitialiser après 10 secondes
+    setTimeout(() => {
+      winnerNft.value = null;
+      isDrawing.value = false; // Fin du tirage
+    }, 10000);
   } catch (error){
     console.error("Erreur lors du tirage :", error);
     alert("Erreur lors du tirage au sort !");
+    isDrawing.value = false; // En cas d'erreur, on réactive le bouton
   }
 }
 </script>
@@ -52,8 +63,12 @@ const drawNft = async () => {
     <div v-else class="text-center">
       <p class="mb-2 text-lg">📌 <strong>Adresse :</strong> {{ walletAddress }}</p>
 
-      <button @click="drawNft" class="bg-green-500 px-4 py-2 mt-4 rounded-lg shadow-md">
-        🎲 Tirer un NFT !
+      <button 
+        @click="drawNft" 
+        :disabled="isDrawing"
+        :class="{'opacity-50 cursor-not-allowed': isDrawing}"
+        class="bg-green-500 px-4 py-2 mt-4 rounded-lg shadow-md">
+        🎲 {{ isDrawing ? 'Tirage en cours...' : 'Tirer un NFT !' }}
       </button>
 
       <div v-if="winnerNft" class="mt-6">

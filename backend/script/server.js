@@ -27,17 +27,30 @@ const metaplex = Metaplex.make(connection)
 
 console.log("Server Wallet Address:", serverWallet.publicKey.toBase58());
 
-// Liste NFT pour le Tirage
-const nftList = [
-  '7vsSusAcLvD6yVgTJ6oFAzBJ7JhcfDA1xFgAzei1ywnm',
-  '2qftdEWt8pWQ9T5xMvy1YXqx4ATKKRfQYACMHrGFo1ih',
-  'CjEejEjtdHGAeGatoyhLHppodUSwPrLe9SVRQxAmnMPw',
-  'DhFFwuvFHNNKeCNb4gpRwmYmajT8ed6NMeovg63xSh6',
-  'A8o7Ym8zextu4XnYpAcyh8wWhfsGspixQrtjz3mGJCY4'
-];
+const nftList = [];
+
+const collectionNFT = async () => {
+  try {
+    console.log("Récupération des NFTs en cours...");
+    const nfts = await metaplex.nfts().findAllByOwner({
+      owner: serverWallet.publicKey
+    });
+
+    nfts.forEach(nft => {
+      nftList.push(nft.mintAddress.toBase58());
+    });
+
+  } catch (error) {
+    console.error("Erreur lors de la récupération des NFTs:", error);
+  }
+};
+
+
+
 
 app.post("/draw", async (req, res) => {
   const { playerPublicKey } = req.body;
+  
 
 
   if (!playerPublicKey || typeof playerPublicKey !== "string") {
@@ -74,5 +87,24 @@ app.post("/draw", async (req, res) => {
   }
 });
 
+
+const startServer = async () => {
 const PORT = process.env.PORT || 5000; // Utilise un port défini en .env ou 5000 par défaut
-app.listen(PORT, () => console.log(`Backend en ligne sur http://localhost:${PORT}`));
+await collectionNFT(); // On attend la récupération des NFTs
+
+app.listen(PORT, () => {
+  console.log(`Backend en ligne sur http://localhost:${PORT}`);
+  console.log("Affichage de la liste des NFTs :", nftList);
+  setInterval(async () => {
+    nftList.length = 0;
+    await collectionNFT();
+    console.log("Mise à jour de la liste des NFTs :", nftList);
+    console.log("Nombre de NFTs :", nftList.length);
+
+  }, 60000); // 60 secondes
+
+
+});
+};
+
+startServer();

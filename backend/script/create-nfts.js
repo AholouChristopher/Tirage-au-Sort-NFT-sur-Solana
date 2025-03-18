@@ -21,7 +21,7 @@ const metaplex = Metaplex.make(connection)
 
   const nftCollection = [
     {
-        name: "NFT Bronze #1",
+        name: "NFT Bronze #4",
         description: "NFT récompense niveau Bronze",
         image: "https://picsum.photos/200",
         attributes: [
@@ -29,7 +29,7 @@ const metaplex = Metaplex.make(connection)
         ]
     },
     {
-        name: "NFT Argent #1",
+        name: "NFT Argent #4",
         description: "NFT récompense niveau Argent",
         image: "https://picsum.photos/200",
         attributes: [
@@ -37,7 +37,7 @@ const metaplex = Metaplex.make(connection)
         ]
     },
     {
-        name: "NFT Or #1",
+        name: "NFT Or #4",
         description: "NFT récompense niveau Or",
         image: "https://picsum.photos/200",
         attributes: [
@@ -45,7 +45,7 @@ const metaplex = Metaplex.make(connection)
         ]
     },
     {
-        name: "NFT Diamant #1",
+        name: "NFT Diamant #4",
         description: "NFT récompense niveau Diamant",
         image: "https://picsum.photos/200",
         attributes: [
@@ -53,7 +53,7 @@ const metaplex = Metaplex.make(connection)
         ]
     },
     {
-        name: "NFT Légendaire #1",
+        name: "NFT Légendaire #4",
         description: "NFT récompense niveau Légendaire",
         image: "https://picsum.photos/200",
         attributes: [
@@ -103,9 +103,9 @@ const createNFTs = async () => {
 
             // Créer le NFT
             const { nft } = await metaplex.nfts().create({
-                uri : uri,
+                uri: uri,
                 name: metadata.name,
-                sellerFeeBasisPoints: 1000 // 10%
+                sellerFeeBasisPoints: 1000, // 10%
             });
             console.log(`✅ NFT créé avec succès! Mint address: ${nft.address.toString()}`);
             createdNFTs.push(nft);
